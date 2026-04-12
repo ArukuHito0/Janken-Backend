@@ -15,6 +15,12 @@ function reset_player_hand($db, $roomId){
     set_player_hand($db, $roomId, NULL, NULL, NULL);
 }
 
+// 各プレイヤーの手をリセット
+function reset_player_select($db, $roomId){
+    set_player_select($db, $roomId, 'p1_select', -1);
+    set_player_select($db, $roomId, 'p2_select', -1);
+}
+
 // 各プレイヤーのスコアを0にリセット
 function reset_score($db, $roomId){
     $row = get_room_data($db, $roomId);

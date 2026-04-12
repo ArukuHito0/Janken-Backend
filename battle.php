@@ -8,7 +8,7 @@ $p1 = $row['p1_select']; // player 1の手
 $p2 = $row['p2_select']; // player 2の手
 
 // 各プレイヤーが手を選択済みなら、勝敗判定に進む
-if($row['p1_ready'] && $row['p2_ready']){
+if($p1 != -1 && $p2 != -1){
    if($p1 == $p2){
     // あいこ
    }else if(($p1 == 0 && $p2 == 1) || ($p1 == 1 && $p2 == 2) || ($p1 == 2 && $p2 == 0)){
