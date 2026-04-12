@@ -1,0 +1,90 @@
+
+PHP側の処理
+
+初期化処理
+    盤面クリア
+        statusを0(準備中)にする
+        p1_select, p2_selectを-1にする
+        p1_hand, p2_handをNULLにする
+    スコアリセット
+        p1_score, p2_scoreを0にする
+    
+    盤面クリアの疑似コード
+    
+    // 準備中にする
+    $status = 0;
+
+    // 選択中の手を未選択にする
+    $column = ($playerNum == 1) ? 'p1_select' : 'p2_select';
+    $sql = "UPDATE game_rooms SET $column = -1 WHERE id = :id"
+    $statement = $db->prepare($sql);
+    $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // 各プレイヤーの手札をリセット
+    $column = ($playerNum == 1) ? 'p1_hand' : 'p2_hand';
+    $sql = "UPDATE game_rooms SET $column = NULL WHERE id = :id"
+    $statement = $db->prepare($sql);
+    $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Unityに対して出力
+    echo_game_json($db, $roomId);
+
+    スコアリセットの疑似コード
+
+    // スコアを0にリセット
+    $column = ($playerNum == 1) ? 'p1_score' : 'p2_score';
+    $sql = "UPDATE game_rooms SET $column = 0 WHERE id = :id";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Unityに対して出力
+    echo_game_json($db, $roomId);
+
+デッキ操作
+    グー(0)x3・チョキ(1)x3・パー(2)x3の配列をシャッフルし、先頭から3つ(0~2)取り出す
+        例）0,1,2=グー,チョキ,パー
+    取り出した3つの数字をp1_handに代入
+    その後、残った配列の先頭から3つ(3~5)取り出し、p2_handに代入
+    残った配列の先頭(6)をopen_cardに代入
+
+    デッキ操作の疑似コード
+
+    // デッキを初期化＋要素をシャッフル
+    $deck = [0,0,0,1,1,1,2,2,2];
+    shuffle($deck);
+
+    // 各プレイヤーの手札と公開カードを代入
+    $p1_hand = implode(",", array_slice($deck, 0, 3));
+    $p2_hand = implode(",", array_slice($deck, 3, 3));
+    $open_card = $deck[6];
+
+    // 各プレイヤーの手札をDBに送信して更新
+    $column = ($playerNum == 1) ? 'p1_hand' : 'p2_hand';
+    $hand = ($playerNum == 1) ? $p1_hand : $p2_hand;
+
+    $sql = "UPDATE game_rooms SET $column = :hand, open_card = :open_card WHERE id = :id";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':hand', $hand, PDO::PARAM_STR);
+    $stmt->bindValue(':open', $open_card, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Unityに対して出力
+    echo_game_json($db, $roomId);
+
+ゲーム開始
+    盤面クリア
+    デッキ操作
+    statusを1(カード選択中)にする
+ゲーム進行中
+    p1_select, p2_selectがどちらも-1じゃなくなったら
+        statusを2(判定中)にする
+判定終了
+    勝利したプレイヤー
+        scoreを+1する
+    statusを0(準備中)にする
+    お互いのプレイヤーがReadyボタンを押したらゲーム開始に戻る
+        この時、後の方に押したプレイヤーが盤面クリア・デッキ操作を行う
