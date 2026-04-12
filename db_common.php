@@ -5,20 +5,24 @@ try{
     echo 'DB接続エラー: '.$e->getMessage();
 }
 
+// ゲームの状態をリセット
 function reset_game_status($db, $roomId){
     set_game_status($db, $roomId, 0);
 }
 
+// 各プレイヤーの手札・公開カードをリセット
 function reset_player_hand($db, $roomId){
     set_player_hand($db, $roomId, NULL, NULL, NULL);
 }
 
+// 各プレイヤーのスコアを0にリセット
 function reset_score($db, $roomId){
     $row = get_room_data($db, $roomId);
     set_score($db, $roomId, 1, 0);
     set_score($db, $roomId, 2, 0);
 }
 
+// ゲームの状態をセット
 function set_game_status($db, $roomId, $status){
     $stmt = $db->prepare("UPDATE game_rooms SET game_status = :game_status WHERE id = :id");
     $stmt->bindValue(':game_status', $status, PDO::PARAM_INT);
@@ -26,6 +30,7 @@ function set_game_status($db, $roomId, $status){
     $stmt->execute();
 }
 
+// 各プレイヤーの手札・公開カードをセット
 function set_player_hand($db, $roomId, $p1_hand, $p2_hand, $open_card){
     $stmt = $db->prepare("UPDATE game_rooms SET p1_hand = :p1, p2_hand = :p2, open_card = :_open WHERE id = :id");
     $stmt->bindValue(':p1', $p1_hand, PDO::PARAM_STR);
@@ -35,6 +40,7 @@ function set_player_hand($db, $roomId, $p1_hand, $p2_hand, $open_card){
     $stmt->execute();
 }
 
+// プレイヤーの手をセット
 function set_player_select($db, $roomId, $selecter, $selectedHand){
     $stmt = $db->prepare("UPDATE game_rooms SET $selecter = :hand WHERE id = :id");
     $stmt->bindValue(':hand', $selectedHand, PDO::PARAM_INT);
@@ -42,6 +48,7 @@ function set_player_select($db, $roomId, $selecter, $selectedHand){
     $stmt->execute();
 }
 
+// プレイヤーのスコアをセット
 function set_score($db, $roomId, $playerNum, $score){
     $column = ($playerNum == 1) ? 'p1_score' : 'p2_score';
     $stmt = $db->prepare("UPDATE game_rooms SET $column = :score WHERE id = :id");
@@ -50,6 +57,7 @@ function set_score($db, $roomId, $playerNum, $score){
     $stmt->execute();
 }
 
+// ルームのDBを取得
 function get_room_data($db, $roomId){
     $stmt = $db->prepare("SELECT * FROM game_rooms WHERE id = :id");
     $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
@@ -57,7 +65,7 @@ function get_room_data($db, $roomId){
     return $stmt->fetch(PDO:: FETCH_ASSOC);
 }
 
-// 全てのSQLのデータを返信
+// ルームのDBをUnityに返す
 function echo_game_json($db, $roomId){
     $row = get_room_data($db, $roomId);
     
