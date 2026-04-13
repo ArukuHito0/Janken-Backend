@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: 127.0.0.1
--- 生成日時: 2026-04-12 17:22:58
+-- 生成日時: 2026-04-13 08:12:47
 -- サーバのバージョン： 10.4.32-MariaDB
 -- PHP のバージョン: 8.2.12
 
@@ -38,6 +38,7 @@ CREATE TABLE `game_rooms` (
   `p2_score` int(11) DEFAULT 0,
   `p1_ready` tinyint(1) NOT NULL DEFAULT 0,
   `p2_ready` tinyint(1) NOT NULL DEFAULT 0,
+  `winner` int(11) NOT NULL,
   `game_status` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -45,8 +46,8 @@ CREATE TABLE `game_rooms` (
 -- テーブルのデータのダンプ `game_rooms`
 --
 
-INSERT INTO `game_rooms` (`id`, `open_card`, `p1_hand`, `p2_hand`, `p1_select`, `p2_select`, `p1_score`, `p2_score`, `p1_ready`, `p2_ready`, `game_status`) VALUES
-(1, 0, '2,1,2', '1,2,1', 2, -1, 0, 0, 0, 0, 1);
+INSERT INTO `game_rooms` (`id`, `open_card`, `p1_hand`, `p2_hand`, `p1_select`, `p2_select`, `p1_score`, `p2_score`, `p1_ready`, `p2_ready`, `winner`, `game_status`) VALUES
+(1, NULL, NULL, NULL, 4, 4, 0, 0, 0, 0, -1, 1);
 
 --
 -- ダンプしたテーブルのインデックス
