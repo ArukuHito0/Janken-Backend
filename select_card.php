@@ -1,4 +1,5 @@
 <?php
+// プレイヤーが出す手を選択するためのAPI
 require_once 'db_common.php';
 
 // UnityからPOSTで送られてくるデータ

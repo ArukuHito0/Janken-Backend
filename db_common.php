@@ -1,13 +1,9 @@
 <?php
+// データベース接続と共通関数を定義するAPI
 try{
     $db = new PDO('mysql:dbname=janken_db;host=127.0.0.1;charset=utf8', 'root', '');
 }catch(PDOException $e){
     echo 'DB接続エラー: '.$e->getMessage();
-}
-
-// ゲームの状態をリセット
-function reset_game_status($db, $roomId){
-    set_game_status($db, $roomId, 0);
 }
 
 // 各プレイヤーの手札・公開カードをリセット
@@ -17,8 +13,8 @@ function reset_player_hand($db, $roomId){
 
 // 各プレイヤーの手をリセット
 function reset_player_select($db, $roomId){
-    set_player_select($db, $roomId, 'p1_select', -1);
-    set_player_select($db, $roomId, 'p2_select', -1);
+    set_player_select($db, $roomId, 'p1_select', 4);
+    set_player_select($db, $roomId, 'p2_select', 4);
 }
 
 // 各プレイヤーのスコアを0にリセット
@@ -26,6 +22,11 @@ function reset_score($db, $roomId){
     $row = get_room_data($db, $roomId);
     set_score($db, $roomId, 1, 0);
     set_score($db, $roomId, 2, 0);
+}
+
+// 勝者をリセット
+function reset_winner($db, $roomId){
+    set_winner($db, $roomId, -1);
 }
 
 // ゲームの状態をセット
@@ -63,6 +64,14 @@ function set_score($db, $roomId, $playerNum, $score){
     $stmt->execute();
 }
 
+// じゃんけんの勝者をセット
+function set_winner($db, $roomId, $winner){
+    $stmt = $db->prepare("UPDATE game_rooms SET winner = :winner WHERE id = :id");
+    $stmt->bindValue(':winner', $winner, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $roomId, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
 // ルームのDBを取得
 function get_room_data($db, $roomId){
     $stmt = $db->prepare("SELECT * FROM game_rooms WHERE id = :id");
@@ -85,7 +94,8 @@ function echo_game_json($db, $roomId){
         "p2_hand"  => $row['p2_hand'],
         "open_card" => (int)$row['open_card'],
         "p1_select" => (int)$row['p1_select'],
-        "p2_select" => (int)$row['p2_select']
+        "p2_select" => (int)$row['p2_select'],
+        'winner' => (int)$row['winner']
     ]);
     exit;
 }
