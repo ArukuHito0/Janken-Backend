@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: 127.0.0.1
--- 生成日時: 2026-04-13 08:12:47
+-- 生成日時: 2026-04-14 10:50:22
 -- サーバのバージョン： 10.4.32-MariaDB
 -- PHP のバージョン: 8.2.12
 
@@ -29,25 +29,20 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `game_rooms` (
   `id` int(11) NOT NULL,
+  `p1_id` text DEFAULT NULL,
+  `p2_id` text DEFAULT NULL,
   `open_card` int(11) DEFAULT NULL,
   `p1_hand` varchar(10) DEFAULT NULL,
   `p2_hand` varchar(10) DEFAULT NULL,
-  `p1_select` int(11) DEFAULT -1,
-  `p2_select` int(11) DEFAULT -1,
+  `p1_select` int(11) DEFAULT 4,
+  `p2_select` int(11) DEFAULT 4,
   `p1_score` int(11) DEFAULT 0,
   `p2_score` int(11) DEFAULT 0,
   `p1_ready` tinyint(1) NOT NULL DEFAULT 0,
   `p2_ready` tinyint(1) NOT NULL DEFAULT 0,
   `winner` int(11) NOT NULL,
-  `game_status` int(11) DEFAULT 0
+  `game_status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- テーブルのデータのダンプ `game_rooms`
---
-
-INSERT INTO `game_rooms` (`id`, `open_card`, `p1_hand`, `p2_hand`, `p1_select`, `p2_select`, `p1_score`, `p2_score`, `p1_ready`, `p2_ready`, `winner`, `game_status`) VALUES
-(1, NULL, NULL, NULL, 4, 4, 0, 0, 0, 0, -1, 1);
 
 --
 -- ダンプしたテーブルのインデックス
@@ -58,6 +53,16 @@ INSERT INTO `game_rooms` (`id`, `open_card`, `p1_hand`, `p2_hand`, `p1_select`, 
 --
 ALTER TABLE `game_rooms`
   ADD PRIMARY KEY (`id`);
+
+--
+-- ダンプしたテーブルの AUTO_INCREMENT
+--
+
+--
+-- テーブルの AUTO_INCREMENT `game_rooms`
+--
+ALTER TABLE `game_rooms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

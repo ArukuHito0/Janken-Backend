@@ -11,7 +11,7 @@ $p1 = $row['p1_select']; // player 1の手
 $p2 = $row['p2_select']; // player 2の手
 
 // 各プレイヤーが手を選択済みなら、勝敗判定に進む
-if($p1 != -1 && $p2 != -1){
+if(is_select_players($row)){
    if($p1 == $p2){
     // あいこ
     set_winner($db, $roomId, 0);
@@ -25,6 +25,4 @@ if($p1 != -1 && $p2 != -1){
     set_score($db, $roomId, 2, $row['p2_score'] + 1);
    }
 }
-
-echo_game_json($db, $roomId);
 ?>

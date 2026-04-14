@@ -18,11 +18,9 @@ $p2_hand = implode(",", $p2_array); // p2_arrayを文字列に変換
 $open_card = $deck[6];
 
 // 配った手札をDBに送信
-set_player_hand($db, $roomId, $p1_hand, $p2_hand, $open_card);
+set_players_hand($db, $roomId, $p1_hand, $p2_hand, $open_card);
 
 // デバッグ用: player 2の手をランダムに選択
 $rnd_idx = array_rand($p2_array);
 set_player_select($db, $roomId, 'p2_select', $p2_array[$rnd_idx]);
-
-echo_game_json($db, $roomId);
 ?>
