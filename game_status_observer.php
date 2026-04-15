@@ -10,8 +10,6 @@ $gameStatus = $row['game_status'];
 switch($gameStatus){
     case STATUS_WAITING:
         // ルーム待機中
-        set_game_status($db, $roomId, STATUS_READY); // デバッグ用
-
         if(is_match_players($row)){
             // プレイヤーが埋まったら、ルーム準備完了に移行
             set_game_status($db, $roomId, STATUS_READY);
