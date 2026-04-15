@@ -46,15 +46,15 @@ function create_new_room($db, $userId){
     $stmt->execute();
     
     $roomId = $db->lastInsertId();
-        
+
     reset_game_status($db, $roomId);
     reset_players_ready($db, $roomId);
     reset_players_hand($db, $roomId);
     reset_players_select($db, $roomId);
     reset_players_score($db, $roomId);
     reset_winner($db, $roomId);
-    
+
     // プレイヤー番号とルームIDを返す
-    return ['player_num' => 1, 'room_id' => (int)$db->lastInsertId()];
+    return ['player_num' => 1, 'room_id' => $roomId];
 }
 ?>

@@ -2,9 +2,6 @@
 // デッキのリセットとシャッフル、手札の配布を行うAPI
 require_once 'db_common.php';
 
-$roomId = $_POST['room_id'];
-$playerNum = $_POST['player_num'];
-
 // デッキをリセットし、シャッフル
 $deck = [0,0,0,1,1,1,2,2,2];
 shuffle($deck);

@@ -2,8 +2,6 @@
 // じゃんけんの勝敗判定を行うAPI
 require_once 'db_common.php';
 
-$roomId = $_POST['room_id'];
-
 // 最新の情報の確認
 $row = get_room_data($db, $roomId);
 
@@ -14,7 +12,7 @@ $p2 = $row['p2_select']; // player 2の手
 if(is_select_players($row)){
    if($p1 == $p2){
     // あいこ
-    set_winner($db, $roomId, 0);
+    set_winner($db, $roomId, -1);
    }else if(($p1 == 0 && $p2 == 1) || ($p1 == 1 && $p2 == 2) || ($p1 == 2 && $p2 == 0)){
     // player 1の勝利
     set_winner($db, $roomId, 1);
