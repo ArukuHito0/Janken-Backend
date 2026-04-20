@@ -8,12 +8,11 @@ $playerNum = $_POST['player_num'];
 $row = get_room_data($db, $roomId);
 $gameStatus = $row['game_status'];
 
-// プレイヤー1がゲームの状態を監視し、状態に応じて処理を進める
-if($playerNum == 1){
+if($playerNum == ($row['p1_connect'] ? 1 : 2)){
     switch($gameStatus){
         case STATUS_WAITING:
             // ルーム待機中
-            if(is_match_players($row)){
+            if(is_connect_players($row)){
                 // プレイヤーが埋まったら、ルーム準備完了に移行
                 set_game_status($db, $roomId, STATUS_READY);
             }
@@ -45,6 +44,16 @@ if($playerNum == 1){
             break;
         case STATUS_END:
             // 対戦終了
+            if(is_selected_players($row)){
+                if(is_rematch_players($row)){
+                    // お互いが再戦を希望するなら、ゲームの進行をリセットして再度対戦開始
+                    include 'reset.php';
+                    set_game_status($db, $roomId, STATUS_READY);
+                }else{
+                    // プレイヤーが再戦を希望しない場合は、ルーム待機状態に戻す
+                    set_game_status($db, $roomId, STATUS_WAITING);
+                }
+            }
             break;
     }
 }

@@ -5,14 +5,22 @@ require_once 'matching_util.php';
 
 $userId = $_POST['user_id'];
 
-// プレイヤー１もしくはプレイヤー２のどちらかが空いているルームを探す
-$room = find_available_room($db);
+// すでに参加しているルームがあるか確認
+$room = find_joined_room($db, $userId);
 
-// 空いているルームがあれば参加、なければ新しいルームを作成
 if($room){
-    $res = join_room($db, $room, $userId);
+    // すでに参加しているルームがある場合は、そのルームに復帰
+    $res = rejoin_room($db, $room, $userId);
 }else{
-    $res = create_new_room($db, $userId);
+    // プレイヤー１もしくはプレイヤー２のどちらかが空いているルームを探す
+    $room = find_available_room($db);
+
+    // 空いているルームがあれば参加、なければ新しいルームを作成
+    if($room){
+        $res = join_room($db, $room, $userId);
+    }else{
+        $res = create_new_room($db, $userId);
+    }
 }
 
 // ルームIDとプレイヤー番号をJSON形式で返す
