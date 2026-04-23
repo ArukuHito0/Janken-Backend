@@ -6,7 +6,7 @@ require_once 'db_common.php';
 $row = get_room_data($db, $roomId);
 
 // 各プレイヤーが手を選択済みなら、勝敗判定に進む
-if(is_select_players($row)){
+if(is_select_hand_players($row)){
    $result = get_janken_winner($row); // 勝敗判定の関数を呼び出す
 
    set_winner($db, $roomId, $result['winner']); // 勝者をDBにセット

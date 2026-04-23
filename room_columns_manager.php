@@ -114,6 +114,7 @@ function set_winner($db, $roomId, $playerNum){
 function get_janken_winner($row){
     $p1 = $row['p1_select']; // player 1の手
     $p2 = $row['p2_select']; // player 2の手
+    
     if($p1 == $p2)
         return ['winner' => -1]; // あいこ
     else if(($p1 == 0 && $p2 == 1) || ($p1 == 1 && $p2 == 2) || ($p1 == 2 && $p2 == 0))

@@ -24,7 +24,7 @@ if($playerNum == ($row['p1_connect'] ? 1 : 2)){
             break;
         case STATUS_SELECTING:
             // プレイヤーが手を選択中
-            if(is_select_players($row)){
+            if(is_select_hand_players($row)){
                 // 両プレイヤーが手を選択したら、勝敗判定に移行
                 set_game_status($db, $roomId, STATUS_BATTLE);
             }

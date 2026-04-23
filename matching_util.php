@@ -17,7 +17,6 @@ function find_available_room($db){
 function find_joined_room($db, $userId){
     $stmt = $db->prepare("SELECT * FROM game_rooms 
                           WHERE (p1_id = :userId OR p2_id = :userId)
-                          AND game_status != '" . STATUS_END . "'
                           ORDER BY id ASC LIMIT 1");
     $stmt->bindValue(':userId', $userId, PDO::PARAM_STR);
     $stmt->execute();
@@ -63,11 +62,12 @@ function leave_room($db, $room, $userId){
     $playerNum = ($room['p1_id'] == $userId) ? 1 : 2;
 
     set_player_connect($db, $room['id'], $playerNum, false); // 接続状態を非アクティブにセット
+    set_player_status($db, $room['id'], $playerNum, PLAYER_LEAVE); // プレイヤーの状態をDBにセット
 
     $p_id = ($playerNum == 1) ? 'p1_id' : 'p2_id';
 
-    if($room['game_status'] != STATUS_END){
-        $stmt= $db->prepare("UPDATE game_rooms SET p1_id = NULL, p2_id = NULL WHERE id = :id");
+    if($room['game_status'] == STATUS_END){
+        $stmt= $db->prepare("UPDATE game_rooms SET $p_id = NULL WHERE id = :id");
         $stmt->bindValue(':id', $room['id'], PDO::PARAM_INT);
         $stmt->execute();
     }

@@ -6,8 +6,13 @@ function is_connect_players($row){
     return ($row['p1_connect'] && $row['p2_connect']);
 }
 
+// どちらかのプレイヤーが接続されているか
+function is_connect_some_player($row){
+    return ($row['p1_connect'] || $row['p2_connect']);
+}
+
 // 各プレイヤーが手を選択しているか確認
-function is_select_players($row){
+function is_select_hand_players($row){
     return ($row['p1_select'] != 4 && $row['p2_select'] != 4);
 }
 
